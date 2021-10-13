@@ -1,0 +1,23 @@
+@import '../../../node_modules/bootstrap/scss/bootstrap.scss';
+//@import "../../assets/scss2/custom.scss";
+
+// //Import Light mode
+//@import '../../assets/scss2/style.scss';
+
+@import '../../components/NewHome/pages/home/scss/_header.scss';
+@import '../../components/NewHome/pages/home/scss/_footer.scss';
+@import '../../components/NewHome/pages/home/scss/_home-layout.scss';
+@import '../../components/NewHome/pages/home/scss/_home-components.scss';
+
+
+//Import Dark RTL mode
+// @import './assets/scss2/style-dark-rtl.scss';
+
+//Import RTL mode
+// @import './assets/scss2/style-rtl.scss';
+
+// Import Dark Mode
+// @import './assets/scss2/style-dark.scss';
+
+
+*{}

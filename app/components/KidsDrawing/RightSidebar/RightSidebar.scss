@@ -1,0 +1,60 @@
+.RightSidebar {
+  width: 10rem;
+  height: 100vh;
+  padding: 1rem 0;
+  overflow: hidden;
+  position: relative;
+
+  @media (max-width: 768px) {
+    display: none;
+  }
+
+  &--slider {
+    height: 100%;
+    position: relative;
+    overflow-y: hidden;
+
+    .slick-list {
+      position: absolute;
+      top: 5.5rem;
+      height: 83vh !important;
+      left: 0rem;
+    }
+
+    &-nextArrow {
+      position: absolute;
+      bottom: 0rem;
+      left: 35%;
+      cursor: pointer;
+    }
+
+    &-prevArrow {
+      position: absolute;
+      top: 0;
+      z-index: 2;
+      cursor: pointer;
+      left: 35%;
+    }
+
+    &__item {
+      outline: none !important;
+      position: relative;
+      width: 7rem !important;
+      cursor: pointer;
+
+      img {
+        transform: translateX(2rem);
+      }
+    }
+
+    &__itemSelected {
+      img {
+        transform: translateX(0.1rem) !important;
+      }
+    }
+  }
+
+  img {
+    height: 6rem;
+  }
+}

@@ -1,0 +1,47 @@
+.carousel {
+    margin-bottom: 26px;
+}
+.carousel-indicators
+{
+    margin-bottom: -26px;
+}
+
+
+.indicator-inactive
+{
+    background: 0 0;
+    height: 10px!important;
+    width: 10px!important;
+    border-radius: 2px;
+    border: none;
+    margin-left: 5px;
+    margin-right: 5px;
+}
+.indicator-active
+{
+    
+    background: blue;
+    height: 10px;
+    width: 10px;
+    border-radius: 2px;
+    transform: rotate(45deg);
+    border: none;
+    margin-left: 5px;
+    margin-right: 5px;
+}
+.leftControl
+{
+    display :none;
+}
+.rightControl
+{
+    display :none;
+}
+.right 
+{
+    display :none;
+}
+.left 
+{
+    display :none;
+}

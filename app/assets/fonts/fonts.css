@@ -1,0 +1,37 @@
+/* 
+  @font-face {
+    font-family: 'CalibriBold';
+    font-weight: 700;
+    src: url('/calbiri/CalibriRegular.ttf');
+    } */
+
+    @font-face {
+    font-family: 'CalibriRegular';
+    font-style: normal;
+    font-weight: normal;
+    src: local('CalibriRegular'), url('CalibriRegular.ttf') format('ttf');
+    }
+  /* @font-face {
+    font-family: CalibriRegular;
+    src: url(../fonts/calbiri/CalibriRegular.ttf);
+    font-weight: 400;
+  }
+  @font-face {
+    font-family: Catamaran-Regular;
+    src: url(../fonts/catamaran/Catamaran-Regular.ttf);
+    font-weight: 400;
+  }
+  @font-face {
+    font-family: Catamaran-Medium;
+    src: url(../fonts/catamaran/Catamaran-Medium.ttf);
+    font-weight: 500;
+  }
+  @font-face {
+    font-family: Catamaran-Bold;
+    src: url(../fonts/catamaran/Catamaran-Bold.ttf);
+    font-weight: 700;
+  }
+  @font-face {
+    font-family: futura;
+    src: url(../fonts/futura/futura.ttf);
+  } */

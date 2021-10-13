@@ -1,0 +1,18 @@
+.section_container {
+    margin: 30px auto;
+
+    & > .row > div {
+        padding-left: 80px;
+        padding-right: 80px;
+    }
+}
+
+
+@media (max-width:991px) {
+    .section_container { 
+        & > .row > div {
+            padding-left: 20px;
+            padding-right: 20px;
+        }
+    }
+}

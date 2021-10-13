@@ -1,0 +1,16 @@
+.pro-image  {
+  .image-container {
+    display: grid;
+    grid-template-columns: auto auto;
+    max-height: 100vh;
+  }
+  .image-item {
+    padding: 5px;
+    text-align: center;
+  }
+}
+
+.Sidebar--opened-my{
+  transform: translateX(-40px) !important;
+  opacity: 1 !important;
+}

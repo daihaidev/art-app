@@ -1,0 +1,69 @@
+.MobileTop {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .MobileTop {
+    display: block;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 5rem;
+    width: 100vw;
+    padding: 0 2rem 0 3rem;
+    box-shadow: 2px 2px 7px rgba(#999, 0.2);
+
+    @media (max-width: 415px) {
+      padding: 0 0rem 0 0.7rem;
+
+      img {
+        height: 2.8rem !important;
+      }
+    }
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    img {
+      height: 3.5rem;
+      cursor: pointer;
+    }
+
+    &--mobileToggle {
+      // font-family: "Handlee", cursive;
+      cursor: pointer;
+      display: block;
+      border: none;
+      color: white;
+      font-size: 1.2rem !important;
+      width: 165px;
+      height: 40px;
+      text-align: right;
+      padding-right: 1.8rem;
+      padding-bottom: 1px;
+      background: url("../../../assets/icons/pring_bg.png");
+      background-position: center;
+      background-repeat: no-repeat;
+
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+
+      @media (max-width: 415px) {
+        width: 140px;
+        height: 30px;
+        font-size: 1.4rem;text-align: right;
+        padding-right: 1.8rem;
+      }
+
+      @media (max-width: 768px) {
+        width: 140px;
+        height: 30px;
+        font-size: 1.4rem;text-align: right;
+        padding-right: 1.8rem;
+      }
+    }
+  }
+}

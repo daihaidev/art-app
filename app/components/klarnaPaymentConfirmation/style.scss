@@ -1,0 +1,14 @@
+.klarna_payment_confirmation {
+
+    .heading {
+        display: flex;
+        justify-content: center;
+    }
+
+    .loader {
+        display: flex;
+        justify-content: center;
+        position: relative;
+        top: 80px;
+    }
+}

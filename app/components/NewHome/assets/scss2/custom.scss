@@ -1,0 +1,129 @@
+.Typist 
+{
+    display: inline;
+}
+
+li.active > a
+{
+    color:#2f55d4 !important
+}
+
+.pagination .active a {
+    color: #ffffff!important;
+}
+
+a {
+ &:hover {
+  cursor:pointer;
+ } 
+}
+
+.accordian-custom
+{
+    border: none;
+}
+
+
+#mt-1
+{
+    margin-top: 5px!important;
+}
+
+#mb-1
+{
+    margin-top: 5px!important;
+}
+
+.react-datepicker-wrapper
+{
+    width: 100%!important;
+}
+
+.masonry-container{
+	width: 100%;
+	margin: auto;
+}
+.masonry{
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+	align-content: stretch;
+	width: 100%;
+	margin: auto;
+}
+.column{
+	display: flex;
+	flex-direction: column;
+	justify-content: flex-start;
+	align-content: stretch;
+	flex-grow: 1;
+}
+.tile{
+	img{
+		width: 100%;
+	}
+}
+
+.indicator-inactive
+{
+    background-color:$primary;
+    opacity: 0.6;
+    height: 10px!important;
+    width: 10px!important;
+    border-radius: 2px;
+    border: none;
+    margin-left: 5px;
+    margin-right: 5px;
+}
+.indicator-active
+{
+    background-color:$primary!important;
+    height: 10px;
+    width: 10px;
+    border-radius: 2px;
+    transform: rotate(45deg);
+    border: none;
+    margin-left: 5px;
+    margin-right: 5px;
+}
+
+.custom-owl-dots{
+    margin-top: 10px;
+    text-align: center;
+}
+
+.classForContainer {
+
+    position: fixed;
+    right: -100px;
+    bottom: 30px;
+    transition: right 0.5s;
+    cursor: pointer;
+    background-color:rgba(47, 85, 212, 0.2);
+    padding: 5px;
+    align-items: center;
+    border-radius: 5px !important;
+
+    &:hover {
+        background-color: $primary !important;
+        svg {
+            stroke: $white!important;
+        }
+    }
+
+    svg {
+        height: 16px;
+        width: 16px;
+        vertical-align: middle;
+        overflow: hidden;
+        margin-top: 2px;
+        margin-left: 5px;
+        fill: none;
+        stroke: $primary!important;
+    }
+    
+  }
+  
+  .classForTransition {
+    right: 30px;
+  }

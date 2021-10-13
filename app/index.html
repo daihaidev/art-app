@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <!-- The first thing in any HTML file should be the charset -->
+  <meta charset="utf-8">
+
+  <!-- Make the page mobile compatible -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+
+  <!-- Allow installing the app to the homescreen -->
+  <meta name="mobile-web-app-capable" content="yes">
+
+  <link rel="icon" href="/favicon.png" />
+  <link rel="stylesheet" type="text/css" charset="UTF-8"
+    href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.6.0/slick.min.css" />
+  <link rel="stylesheet" type="text/css"
+    href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.6.0/slick-theme.min.css" />
+  <link crossorigin="anonymous" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css"
+    integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" rel="stylesheet" />
+  <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/2.4.1/fabric.min.js"></script> -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/4.2.0/fabric.min.js"
+    integrity="sha512-Pdu3zoEng2TLwwjnDne3O7zaeWZfEJHU5B63T+zLtME/wg1zfeSH/1wrtOzOC37u2Y1Ki8pTCdKsnbueOlFlMg=="
+    crossorigin="anonymous"></script>
+
+  <!-- <script src="localforage.js"></script> -->
+
+  <!-- <script
+    src="https://tennisonchan.github.io/fabric-brush/bower_components/fabric-brush/dist/fabric-brush.min.js"></script> -->
+
+  <title>DiggiArt - En tavla värd mer än en Picasso</title>
+
+  <!-- Facebook Pixel Code -->
+  <script>
+    !function (f, b, e, v, n, t, s) {
+      if (f.fbq) return; n = f.fbq = function () {
+        n.callMethod ?
+          n.callMethod.apply(n, arguments) : n.queue.push(arguments)
+      };
+      if (!f._fbq) f._fbq = n; n.push = n; n.loaded = !0; n.version = '2.0';
+      n.queue = []; t = b.createElement(e); t.async = !0;
+      t.src = v; s = b.getElementsByTagName(e)[0];
+      s.parentNode.insertBefore(t, s)
+    }(window, document, 'script',
+      'https://connect.facebook.net/en_US/fbevents.js');
+    fbq('init', '198663881779900');
+    fbq('track', 'PageView');
+  </script>
+  <noscript><img height="1" width="1" style="display:none"
+      src="https://www.facebook.com/tr?id=198663881779900&ev=PageView&noscript=1" /></noscript>
+  <!-- End Facebook Pixel Code -->
+
+
+
+</head>
+
+<body>
+  <!-- Display a message if JS has been disabled on the browser. -->
+  <noscript>If you're seeing this message, that means
+    <strong>JavaScript has been disabled on your browser</strong>, please
+    <strong>enable JS</strong> to make this app work.</noscript>
+ <script src="https://x.klarnacdn.net/kp/lib/v1/api.js" async></script>
+  <!-- The app hooks into this div -->
+  <div id="app"></div>
+  <!-- A lot of magic happens in this file. HtmlWebpackPlugin automatically injects all assets (e.g. bundle.js, main.css) with the correct HTML tags, which is why they are missing in this file. Don't add any assets here! (Check out webpack.dev.babel.js and webpack.prod.babel.js if you want to know more) -->
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+    integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+    crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"
+    integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN"
+    crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"
+    integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV"
+    crossorigin="anonymous"></script>
+
+  <script>
+    $('.panel-collapse').on('shown.bs.collapse', function (e) {
+      var $panel = $(this).closest('.panel');
+      $('html,body').animate({
+        scrollTop: $panel.offset().top
+      }, 500);
+    });
+
+  </script>
+</body>
+
+</html>

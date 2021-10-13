@@ -1,0 +1,385 @@
+@import url("https://fonts.googleapis.com/css2?family=Nunito&display=swap");
+
+// Font Variables
+$nunito: "Nunito", sans-serif;
+
+body {
+  overflow-x: hidden !important;
+  height: 100vh;
+  padding: 0;
+  margin: 0;
+}
+p,
+span {
+  font-family: $nunito !important;
+}
+
+.paper_sizes {
+  display: block;
+  font-size: 1.5rem;
+}
+
+.banner-top {
+  width: 100vw;
+  height: 460px;
+  padding: 30px 10px;
+  /* background: url('./services.jpg'); */
+  background-size: contain;
+  background-repeat: repeat-x;
+  background-position: bottom;
+
+  .banner-img {
+    position: absolute;
+    left: 0;
+    width: 100vw;
+  }
+
+  &-inner {
+    margin-left: 42%;
+
+    & p {
+      color: #000;
+      line-height: 2rem;
+      font-size: 1.5rem;
+      margin: 0;
+    }
+
+    & p:nth-of-type(2) {
+      font-size: 1.8rem;
+      font-weight: 900;
+      color: #3084c2;
+    }
+
+    & span {
+      font-weight: bold;
+    }
+  }
+}
+
+.banner-bottom {
+  width: 100vw !important;
+  background-color: #3084c2;
+  color: #fff;
+  text-align: center;
+
+  &-inner {
+    padding: 0 15% 0 15%;
+  }
+
+  & h1 {
+    font-size: 1.25rem;
+  }
+
+  & p {
+    font-weight: 100;
+    font-size: 1.15rem;
+  }
+}
+
+#my_new_diggiart {
+  background-color: #3084c2 !important;
+  text-align: center;
+  padding: 0 0 !important;
+  color: #ffff !important;
+}
+
+#my-banner {
+  padding: 25px;
+
+  & h1 {
+    font-size: 1.55rem !important;
+    font-weight: bolder;
+  }
+
+  &p {
+    color: #fff !important;
+  }
+
+  &span {
+    color: #fff;
+    font-size: 1.2rem !important;
+  }
+}
+
+/* Age modal CSS */
+.age0modal {
+  width: 400px;
+}
+
+@media only screen and (max-width: 768px) {
+  .age0modal {
+    width: 80vw;
+  }
+
+  .mine-center {
+    display: block;
+    margin: auto;
+  }
+}
+
+@media only screen and (min-width: 576px) and (max-width: 768px) {
+  .age0modal {
+    width: 60vw;
+  }
+}
+
+.paint_container {
+  text-align: center;
+  padding-right: 30px !important;
+  margin-bottom: 30px;
+}
+
+.paint_img {
+  object-fit: cover;
+  width: 15.2rem;
+  height: 21.3rem;
+  margin: 0 auto;
+}
+
+.paint_descr {
+  padding-left: 30px !important;
+
+  button {
+    padding: 18px;
+    margin-bottom: 22px;
+  }
+
+  & span {
+    font-weight: bold;
+  }
+}
+
+.my-black-text {
+  p {
+    color: black !important;
+
+    &span {
+      display: block !important;
+
+      &.m-bold {
+        display: inline-block !important;
+        font-weight: bold;
+      }
+    }
+  }
+}
+
+.dot_container {
+  height: 2rem !important;
+
+  .dot {
+    display: inline-block !important;
+    margin-right: 1.8% !important;
+    width: 2.7% !important;
+    height: 25px !important;
+    clip-path: circle() !important;
+    background-color: #918f8f !important;
+  }
+}
+
+.process_wrapper {
+  margin-top: 40px;
+  margin-bottom: 20px;
+}
+
+.process_note {
+  font-size: 1.2rem;
+  font-style: italic;
+  margin: 0;
+}
+
+.process_title {
+  margin-bottom: 20px;
+}
+
+.process_heading {
+  font-weight: bold;
+  font-size: 1.8rem;
+}
+
+.process-separator {
+  height: 50px !important;
+}
+
+.process_description {
+  height: 260px;
+
+  h2 {
+    margin-bottom: 2rem;
+  }
+
+  h2:nth-of-type(2) {
+    margin-top: 2rem;
+  }
+
+  p {
+    font-size: 1.5rem;
+    margin: 0;
+    line-height: 2rem;
+  }
+}
+
+.stage {
+  border: 2px solid #3084c2;
+  border-radius: 30px;
+  min-width: 220px;
+  max-width: 100vw;
+  height: 300px;
+  padding: 35px 22px;
+  margin: 20px 0;
+  user-select: none;
+  opacity: 0.9;
+  transition: 0.5s;
+
+  &:hover {
+    opacity: 1;
+    transform: scale(1.1);
+  }
+
+  &-img {
+    position: absolute;
+    width: 80px !important;
+    height: 80px !important;
+    margin: -65px 0 0 140px;
+  }
+
+  & h2 {
+    font-weight: bold;
+  }
+}
+
+.player_icons {
+  width: 120px;
+  height: 120px;
+  float: right;
+  cursor: pointer;
+  transition: 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+  transform: translateY(-65%);
+
+  &:hover {
+    transform: translateY(-65%) scale(1.3);
+  }
+}
+
+.red_paint {
+  position: relative;
+  right: 0 !important;
+  transition: 0.7s ease-in-out;
+  margin-left: -20px;
+
+  &:hover {
+    transform: rotate(-30deg);
+  }
+}
+
+@media (min-width: 991px) and (max-width: 1280px) {
+  .process_description {
+    .red_paint {
+      width: auto;
+
+      &:hover {
+        transform: rotate(-30deg);
+      }
+    }
+  }
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  .stage {
+    &-img {
+      width: 65px;
+      height: 65px;
+      margin: -60px 0 0 140px;
+    }
+  }
+
+  .process_description {
+    height: fit-content;
+
+    .red_paint {
+      width: auto;
+
+      &:hover {
+        transform: rotate(-30deg);
+      }
+    }
+  }
+}
+
+@media (max-width: 375px) {
+  .red_paint{
+    display: block;
+    margin: auto;
+  }
+}
+@media (max-width: 411px) {
+  .red_paint{
+    display: block;
+    margin: auto;
+  }
+}
+@media (max-width: 768px) {
+  .banner-top {
+    margin-top: 70px;
+    padding-top: 60px;
+    height: 330px !important;
+    &-inner {
+      margin-left: 10%;
+      margin-top: 24px;
+
+      & p {
+        font-size: 1.4rem;
+      }
+
+      & p:nth-of-type(2) {
+        font-size: 1.8rem;
+      }
+    }
+  }
+
+  .process_description {
+    height: fit-content;
+
+    h2 {
+      margin: 2rem 0;
+    }
+
+    p {
+      font-size: 1.2rem !important;
+    }
+
+    .red_paint {
+      width: 80px;
+      margin-left: 0px;
+
+      &:hover {
+        transform: rotate(-30deg);
+      }
+    }
+  }
+
+  .process_heading {
+    font-size: 1.4rem;
+  }
+
+  .stage {
+    width: 220px;
+    margin: 20px auto;
+    padding: 25px 18px;
+  }
+
+  .banner-bottom {
+    & h1 {
+      font-size: 1.2rem;
+      line-height: 2rem;
+    }
+
+    & p {
+      font-size: 1rem;
+    }
+  }
+
+  .player_icons {
+    width: auto;
+  }
+}

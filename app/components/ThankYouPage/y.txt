@@ -1,0 +1,895 @@
+/* eslint-disable no-undef */
+/* eslint-disable jsx-a11y/alt-text */
+/* eslint-disable global-require */
+/* eslint-disable indent */
+/* eslint-disable prettier/prettier */
+import React from 'react';
+import AvatarEditor from 'react-avatar-editor';
+// import CanvasDraw from "react-canvas-draw";
+import Slider from 'react-rangeslider';
+import 'react-rangeslider/lib/index.css';
+import { toast } from 'react-toastify';
+import watermark from 'watermarkjs';
+import "../../assets/css/myprint.css";
+import edit from '../../assets/icons/edit.svg';
+import card from '../../assets/images/card.svg';
+import email from '../../assets/images/email.svg';
+import move from '../../assets/images/move.svg';
+import swish from '../../assets/images/swish.svg';
+import request from '../../utils/request';
+
+const FormFieldContent = {
+  FIRSTNAME: {
+    title: 'FIRST NAME',
+    field: 'firstName',
+  },
+  LASTNAME: {
+    title: 'LAST NAME',
+    field: 'lastName',
+  },
+  EPOST: {
+    title: 'EPOST',
+    field: 'epost',
+  },
+  ADDRESS1: {
+    title: 'ADDRESS1',
+    field: 'address1',
+  },
+  ADDRESS2: {
+    title: 'ADDRESS2',
+    field: 'address2',
+  },
+  POSTNUMBER: {
+    title: 'POSTNUMBER',
+    field: 'postNumber',
+  },
+  STAD: {
+    title: 'STAD',
+    field: 'stad',
+  },
+  TELEFONUMER: {
+    title: 'TELEFONUMER',
+    field: 'telefonummer',
+  },
+  NOTERA: {
+    title: 'NOTERA',
+    field: 'notera',
+  },
+};
+
+class PrintOrder extends React.Component {
+
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      showPaymentCredit: true,
+      showPaymentCreditSwish: false,
+      prices: [],
+      price: {},
+      number: 1,
+      scale: 0.6,
+      rotation: 0,
+      diwth: 300,
+      width: 300,
+      height: 300,
+      qty: 1,
+      signatureImg: '',
+      cost: 540,
+      totallier: 540,
+      shipping: 0,
+      A4Selected: true,
+      A3Selected: false,
+      ingarSelected: true,
+      hundredKrSelected: false,
+      isFormFilled: false,
+      inputs: 1,
+      firstName: '',
+      lastName: '',
+      address1: '',
+      address2: '',
+      postNumber: '',
+      stad: '',
+      telefonummer: '',
+      epost: '',
+      notera: '',
+
+    }
+    this.canvas = null;
+    this.editorRef = null;
+
+  }
+
+  componentDidMount = () => {
+    window.addEventListener("resize", this.updateWidth)
+    this.updateWidth();
+    request.getPublic('/api/users/getAllPrices')
+      .then(response => {
+        this.setState({
+          price: response && response.data.prices
+        });
+
+      }).catch(error => {
+        toast.error(error.response.data.msg);
+      });
+
+    this.canvas = new fabric.Canvas(document.getElementById('signature-canvas'), {
+      backgroundColor: "#fff",
+    });
+    const commonBrushConfig = {
+      opacity: 0.5,
+      color: '#000'
+    };
+    this.canvas.freeDrawingBrush = new fabric.PencilBrush(this.canvas, commonBrushConfig);
+    this.canvas.freeDrawingBrush.width = 3;
+    this.canvas.freeDrawingBrush.color = '#000';
+    this.canvas.isDrawingMode = true;
+
+    this.setState({
+      savedDrawing: localStorage.getItem("savedDrawing")
+    });
+  }
+
+  increaseQty = () => {
+    this.setState({
+      qty: this.state.qty + 1
+    }, () => { this.updateCost() })
+  }
+
+  decreaseQty = () => {
+    if (this.state.qty == 1) return
+    this.setState({
+      qty: this.state.qty - 1
+    }, () => { this.updateCost() })
+  }
+
+
+  goBackToLink = () => {
+    this.props.history.push(localStorage.getItem("backURL"));
+  }
+
+
+  updateWidth = () => {
+    const element = document.getElementById('reference');
+    const width = element.offsetWidth;
+    const height = (width - 30) / 1.414;
+    // setDiwth(width - 30);
+    // setHeight(height)//A3 size
+
+    this.setState({
+      diwth: width - 30,
+      width: width - 30,
+      height
+    })
+
+    console.log(`Width: ${this.state.diwth - 30}`);
+    console.log(`Height: ${this.state.height}`);
+    console.log(`Ratio: ${(this.state.diwth - 30) / this.state.height}`);
+  }
+
+  handleFormSubmit = (e) => {
+    e.preventDefault();
+  }
+
+  handleOrderSubmit = async () => {
+
+    const u = localStorage.getItem('accessToken') ? request.getProfile().id : null;
+    const format = this.state.A4Selected ? "A4" : "A3";
+    const { firstName,
+      lastName,
+      address1,
+      address2,
+      postNumber,
+      stad,
+      cost,
+      telefonummer,
+      qty,
+      epost,
+      notera } = this.state;
+
+    /* let adjustedImg;
+    if (this.editorRef.current) {
+      // This returns a HTMLCanvasElement, it can be made into a data URL or a blob,
+      // drawn on another canvas, or added to the DOM.
+      const canvas = editorRef.current.getImage();
+      adjustedImg = canvas.toDataURL();
+      console.log(finalImage);
+    } */
+    const finalImage = await this.attachSignature(this.state.savedDrawing);
+
+    request.postPublic('/api/users/createOrder', {
+      firstName, lastName, email: epost, phoneNumber: telefonummer, city: stad, format, image: finalImage,
+      zipCode: postNumber, address1, address2, price: cost, quantity: qty, notera, user: u
+    }).then(response => {
+      const { msg } = response && response.data;
+      toast.success(msg);
+      localStorage.getItem('accessToken') ? window.location.href = "/myorders" : window.location.href = "/order-success";
+    }).catch(error => {
+      toast.error('Something went wrong!' + error);
+    });
+
+    /* const p = price && price.price ? price.price * number : null;
+    const f = price && price.format ? price.format : null;
+    const q = number;
+    let f = "A4";
+    let adjustedImg;
+    if (this.editorRef.current) {
+      // This returns a HTMLCanvasElement, it can be made into a data URL or a blob,
+      // drawn on another canvas, or added to the DOM.
+      const canvas = editorRef.current.getImage();
+      adjustedImg = canvas.toDataURL();
+      const finalImage = await this.attachSignature(adjustedImg);
+      console.log(finalImage);
+    }
+    request.postPublic('users/createOrder', {
+      firstName: this.state.firstName, lastName: this.state.lastName, email: this.state.email, phoneNumber: this.state.telefonummer,
+      city: this.state.stad, zipCode: this.state.postNumber, address1: this.state.address1, address2: this.state.address2, price: this.state.cost,
+      format: f, image: finalImage, quantity: this.state.qty, user: u
+    })
+      .then(response => {
+        const { msg } = response && response.data;
+        toast.success(msg);
+        localStorage.getItem('accessToken') ? props.history.push('/myorders') : props.history.push('/kidsdrawing');
+      }).catch(error => {
+        toast.error('Something went wrong!');
+      })*/
+  }
+
+  setScale = (value) => {
+    this.setState({ scale: value });
+  }
+
+  zoomImage = (value) => {
+    // e.preventDefault();
+    // if (e.deltaY < 0) {
+    //     setScale(scale + 0.3);
+    // }
+    // if (e.deltaY > 0 && scale > 1) {
+    //     setScale(scale - 0.3);
+    // }
+  }
+
+  rotateImage = () => {
+    // setRotation(rotation === 360 ? 0 : rotation + 90)
+    console.log(`prevRotation: ${this.state.rotation}`);
+    this.setState(prevState => ({
+      rotation: prevState.rotation === 360 ? 90 : prevState.rotation + 90
+    }))
+  }
+  // const goBackTo = () => {
+  //   setgoBackTo(localStorage.getItem("niMtoto") === true ? "/kidsdrawing" :"/professionaldrawing")
+  // }
+
+  scrollTop = () => {
+    setTimeout(function () {
+      console.log("scrollToTop");
+      window.scrollTo({
+        top: 0,
+        left: 0,
+        behavior: 'smooth'
+      });
+    }, 1200);
+
+  }
+
+  clearSignature = () => {
+    this.canvas.clear();
+  }
+
+  attachSignature = async () => {
+    const options = {
+      init(img) {
+        img.crossOrigin = 'anonymous'
+      }
+    };
+
+    let finalImg = '';
+
+    await watermark([localStorage.getItem("savedDrawing"), this.canvas.toDataURL()], options)
+      .image(watermark.image.lowerRight())
+      .then(img => {
+        this.setState({
+          savedDrawing: img.src
+        });
+        finalImg = img.src;
+        localStorage.setItem("savedDrawing", img.src);
+      });
+
+    return finalImg
+  }
+
+  saveSignature = () => {
+    this.setState({ signatureImg: this.canvas.toDataURL() })
+  }
+
+
+  updateCost = () => {
+    this.setState({
+      totallier: this.state.cost * this.state.qty + this.state.shipping,
+    })
+  }
+
+  onA4Selected = () => {
+    this.setState({
+      A4Selected: true,
+      A3Selected: false,
+      cost: 540
+    }, () => { this.updateCost() })
+  }
+
+
+  onA3Selected = () => {
+    this.setState({
+      A3Selected: true,
+      A4Selected: false,
+      cost: 720
+    }, () => { this.updateCost() })
+  }
+
+  onIngarSelected = () => {
+
+    this.setState({
+      shipping: 0,
+      hundredKrSelected: false,
+      ingarSelected: true,
+    }, () => { this.updateCost() })
+  }
+
+  on100KrSelected = () => {
+    this.setState({
+      shipping: 100,
+      hundredKrSelected: true,
+      ingarSelected: false,
+    }, () => { this.updateCost() })
+  }
+
+  onInputChange = (e) => {
+    const { name, value } = e.target;
+    if (value !== "") {
+      console.log(name + ": " + value);
+      this.setState({
+        [name]: value,
+        inputs: (this.state.inputs + 1)
+      });
+
+      console.log("inputs: " + this.state.inputs);
+    }
+
+    if (this.state.inputs >= 7) {
+      console.log("All fields filled");
+      this.setState({ isFormFilled: true })
+    } else {
+    }
+  };
+
+
+  render() {
+
+    const {
+      FIRSTNAME,
+      LASTNAME,
+      EPOST,
+      ADDRESS1,
+      ADDRESS2,
+      POSTNUMBER,
+      STAD,
+      TELEFONUMER,
+      NOTERA,
+    } = FormFieldContent;
+
+    return (
+      <React.Fragment>
+        <div
+          className="my-print-page container-fluid" id="printModal" tabIndex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+          aria-hidden="true">
+          <div className="my-modal" role="document">
+            <div className="p-0">
+              <div className="border-left border-top border-right py-2 px-1 d-flex align-items-center">
+                <button onClick={this.props.hidePrintPage} type="button" className="btn btn-outline-danger py-0 mr-3">
+                  Tillbaka
+                </button>
+                <h5 className="modal-title text-center m-auto" id="exampleModalLabel">Skicka till tryck</h5>
+
+                <button type="button" className="close" data-dismiss="modal" aria-label="Close">
+
+                </button>
+              </div>
+              <div className="modal-body p-0">
+                <div className="bs-example">
+                  <div className="accordion" id="printAccordion">
+                    <div className="">
+                      <div className="p-0 bg-mine-blue" id="headingOne">
+                        <h2 className="m-0">
+                          <a href="!#" className="nav-link my-a-" data-toggle="collapse" data-target="#collapseOne"><span className="accordion_num">1</span> Välj storlek</a>
+                        </h2>
+                      </div>
+                      <div id="collapseOne" className="collapse show border-left border-bottom border-right" aria-labelledby="headingOne" data-parent="#printAccordion">
+                        <div className="card-body p-0 py-3">
+                          <div className="container-fluid">
+                            <div className="row">
+                              <div className="col-md-6" id="reference">
+                                <AvatarEditor
+                                  ref={this.editorRef}
+                                  image={this.state.savedDrawing}
+                                  scale={this.state.scale}
+                                  // width={(rotation === 90 || rotation === 270) ? 300 : 400}
+                                  height={(rotation == 0 || rotation == 180 || rotation == 360) ? height: (rotation == 90 || rotation == 270) ? diwth : height}
+                                  //width={diwth - 30}
+                                  width={(rotation == 0 || rotation == 180 || rotation == 360) ? diwth : (rotation == 90 || rotation == 270) ? height : diwth}
+                                  /* height={(rotation == 0 || rotation == 180 || rotation == 360) ? (window.innerWidth > 768) ? height : 300 : (rotation == 90 || rotation == 270) ? diwth : (window.innerWidth > 768) ? height : 300}
+                                  //width={diwth - 30}
+                                  width={(rotation == 0 || rotation == 180 || rotation == 360) ? diwth : (rotation == 90 || rotation == 270) ? (window.innerWidth > 768) ? height : 300 : diwth} */
+                                  rotate={this.state.rotation}
+                                  border={2}
+                                />
+                                {
+                                  this.state.signatureImg
+                                  &&
+                                  <div
+                                    style={{
+                                      position: 'absolute',
+                                      top: `${this.state.width - (this.state.width > 500 ? 260 : 230)}px`,
+                                      right: '4rem'
+                                    }}
+                                  >
+                                    <img src={this.state.signatureImg} alt="" style={this.state.width > 500 ? { width: '12rem', height: '6rem' } : { width: '8rem', height: '4rem' }} />
+                                  </div>
+                                }
+                              </div>
+                              <div className="col-md-6 ">
+                                {
+                                  window.innerWidth <= 768 ?
+                                    <>
+                                      <div className="col-md-12 p-0 pt-3">
+                                        Valfri: <span className="text-muted ml-1">placera din målning som du vill ha det på det färdiga trycket</span>
+                                      </div>
+                                      <div className="p-3 row">
+                                        <div className="row col-md-6 d-flex flex-row justify-content-left align-items-center">
+                                          <img
+                                            title="Rotate"
+                                            alt="Rotate"
+                                            width={42}
+                                            className="img-fluid"
+                                            onClick={this.rotateImage}
+                                            src={require('../../assets/images/update-arrow.png')}
+                                          />
+
+                                          <img className="move0mIcon" src={move} alt="" width="42px" height="42px"></img>
+                                        </div>
+                                        <div className="col-md-6 mt-3">
+                                          <div className="row align-items-center slidecontainer">
+                                            <label htmlFor="customRange1">Zooma:</label>
+                                            <div className="slider">
+                                              <Slider
+                                                min={0.4}
+                                                max={1.8}
+                                                step={0.1}
+                                                // labels={{ 0: '-', 5: '+' }}
+                                                value={this.state.scale}
+                                                class="custom-range"
+                                                // onChangeStart={this.handleChangeStart}
+                                                onChange={value => this.setState({ scale: Number(value).toFixed(1) })}
+                                              // onChangeComplete={this.handleChangeComplete}
+                                              />
+                                            </div>
+                                            {/* <input type="range" class="custom-range" id="customRange1"></input> */}
+                                          </div>
+
+                                          <div className="row mt-4 d-flex align-items-center">
+                                            <span>Signering:</span> <button className="ml-2 btn btn-outline-success" data-toggle="modal" data-target="#signatureModal">Signera din konst?</button>
+                                          </div>
+                                        </div>
+                                      </div>
+
+                                      <div className="card p-3">
+                                        <div className="d-flex flex-row justify-content-between">
+                                          <label className="radio radio-before">
+                                            <span className="radio__input">
+                                              <input type="radio" name="radiosize" value="720" checked={this.state.A3Selected} onClick={() => this.onA3Selected()}></input>
+                                              <span className="radio__control"></span>
+                                            </span>
+                                            <span className="radio__label">A3 29,7 x 42 cm</span>
+                                          </label>
+                                          <span>720 kr</span>
+                                        </div>
+                                      </div>
+                                      <div className="card  p-3 mt-2">
+                                        <div className="d-flex flex-row justify-content-between">
+                                          <label className="radio radio-before">
+                                            <span className="radio__input">
+                                              <input type="radio" name="radiosize" value="540" checked={this.state.A4Selected} onClick={() => this.onA4Selected()}></input>
+                                              <span className="radio__control"></span>
+                                            </span>
+                                            <span className="radio__label">A4 21 x 29,7 cm</span>
+                                          </label>
+                                          <span>540 kr</span>
+                                        </div>
+                                      </div>
+
+                                    </>
+                                    :
+                                    <>
+                                      <div className="card p-3">
+                                        <div className="d-flex flex-row justify-content-between">
+                                          <label className="radio radio-before">
+                                            <span className="radio__input">
+                                              <input type="radio" name="radiosize" value="720" id="a3Radio" checked={this.state.A3Selected} onClick={() => this.onA3Selected()}></input>
+                                              <span className="radio__control"></span>
+                                            </span>
+                                            <span className="radio__label">A3 29,7 x 42 cm</span>
+                                          </label>
+                                          <span>720 kr</span>
+                                        </div>
+                                      </div>
+                                      <div className="card  p-3 mt-2">
+                                        <div className="d-flex flex-row justify-content-between">
+                                          <label className="radio radio-before">
+                                            <span className="radio__input">
+                                              <input type="radio" name="radiosize" value="540" checked={this.state.A4Selected} onClick={() => this.onA4Selected()}></input>
+                                              <span className="radio__control"></span>
+                                            </span>
+                                            <span className="radio__label">A4 21 x 29,7 cm</span>
+                                          </label>
+                                          <span>540 kr</span>
+                                        </div>
+                                      </div>
+{/*                                       <div className="mt-3 d-flex flex-row align-items-center">
+                                        <img
+                                          title="Rotate"
+                                          alt="Rotate"
+                                          width={42}
+                                          className="img-fluid" onClick={this.rotateImage}
+                                          src={require('../../assets/images/update-arrow.png')}
+                                        />
+                                        <img className="move0mIcon ml-3" src={move} alt="" width="42px" height="42px"></img>
+                                        <span className="text-muted ml-3">Placera din målning som du vill ha det på det färdiga trycket</span>
+                                      </div>
+ */}
+                                      <div className="col-md-12 p-0 pt-3">
+                                        Valfri: <span className="text-muted ml-1">placera din målning som du vill ha det på det färdiga trycket</span>
+                                      </div>
+                                      <div className="p-3 row">
+                                        <div className="row col-md-6 d-flex flex-row justify-content-left align-items-center">
+                                          <img
+                                            title="Rotate"
+                                            alt="Rotate"
+                                            width={42}
+                                            className="img-fluid"
+                                            onClick={this.rotateImage}
+                                            src={require('../../assets/images/update-arrow.png')}
+                                          />
+
+                                          <img className="move0mIcon ml-3" src={move} alt="" width="42px" height="42px"></img>
+                                        </div>
+                                        <div className="col-md-6 mt-3">
+                                          <div className="row align-items-center slidecontainer">
+                                            <label htmlFor="customRange1">Zooma:</label>
+                                            <div className="slider">
+                                              <Slider
+                                                min={0.4}
+                                                max={1.8}
+                                                step={0.1}
+                                                // labels={{ 0: '-', 5: '+' }}
+                                                value={this.state.scale}
+                                                class="custom-range"
+                                                // onChangeStart={this.handleChangeStart}
+                                                onChange={value => this.setState({ scale: Number(value).toFixed(1) })}
+                                              // onChangeComplete={this.handleChangeComplete}
+                                              />
+                                            </div>
+                                            {/* <input type="range" class="custom-range" id="customRange1"></input> */}
+                                          </div>
+
+                                          <div className="row mt-4 d-flex align-items-center">
+                                            <span>Signering:</span> <button className="ml-2 btn btn-outline-success" data-toggle="modal" data-target="#signatureModal">Signera din konst?</button>
+                                          </div>
+                                        </div>
+                                      </div>
+{/*
+                                      <div className="p-3 row">
+                                        <div className="col-md-4 p-0 pt-3">
+                                          Valfri
+                                        </div>
+                                      </div>
+                                      <div className="col-md-8">
+                                        <div className="row align-items-center slidecontainer">
+                                          <label htmlFor="customRange1">Zooma:</label>
+                                          <div className="slider">
+                                            <Slider
+                                              min={0.4}
+                                              max={1.8}
+                                              step={0.1}
+                                              // labels={{ 0: '-', 5: '+' }}
+                                              value={this.state.scale}
+                                              class="custom-range"
+                                              // onChangeStart={this.handleChangeStart}
+                                              onChange={value => this.setState({ scale: Number(value).toFixed(1) })}
+                                            // onChangeComplete={this.handleChangeComplete}
+                                            />
+                                          </div>
+                                        </div>
+                                        <div className="row mt-3 d-flex align-items-center">
+                                          <span>Signering:</span> <button className="ml-2 btn btn-outline-success" data-toggle="modal" data-target="#signatureModal">Signera din konst?</button>
+                                        </div>
+                                      </div> */}
+                                    </>
+                                }
+                                <table className="table border-right border-left border-bottom mt-1">
+                                  <thead className="bg-mine-blue">
+                                    <tr>
+                                      <th className="my-no-border " colSpan="3" scope="col">Sammanfattning</th>
+                                    </tr>
+                                  </thead>
+                                  <tbody>
+                                    <tr>
+
+                                      <th colSpan={2} className="align-middle">Produkt:</th>
+                                      <td colSpan={1}>Diggiart canvas</td>
+                                    </tr>
+
+                                    <tr>
+                                      <th className="align-middle" >Frakt</th>
+                                      <td>
+                                        <label className="radio radio-before">
+                                          <span className="radio__input">
+                                            <input type="radio" name="radioF" value="0" checked={this.state.ingarSelected} onClick={() => this.onIngarSelected()}></input>
+                                            <span className="radio__control"></span>
+                                          </span>
+                                          <span className="radio__label">Ingår</span>
+                                        </label>
+                                    Närmaste ombud
+                                      </td>
+                                      <td className="align-middle">
+                                        <label className="radio radio-before">
+                                          <span className="radio__input">
+                                            <input type="radio" name="radioF" value="100" checked={this.state.hundredKrSelected} onClick={() => this.on100KrSelected()}></input>
+                                            <span className="radio__control"></span>
+                                          </span>
+                                          <span className="radio__label">100 Kr</span>
+                                        </label>
+                                      Hemleverans
+                                      </td>
+                                    </tr>
+
+                                    <tr>
+                                      <th className="align-middle">Antal:</th>
+                                      <td className="align-middle"><div className="col-lg-6 col-md-8">
+                                        {/* <input type="number" className="my-number" id="inputAddress2" placeholder=" required0" value="1"></input> */}
+                                        <div className="input-group i_group align-items-center">
+                                          <input type="number" className="my-number" min="1" id="spinner" name="quantity" value={this.state.qty} />
+                                          <div className="p-0 arrow_div input-group-append d-flex flex-column justify-content-between">
+                                            <button className="m_arrows" onClick={this.increaseQty}>&#8963;</button>
+                                            <button className="m_arrows" onClick={this.decreaseQty}>&#8964;</button>
+                                          </div>
+                                        </div>
+
+                                      </div>
+                                      </td>
+                                      <td></td>
+                                    </tr>
+                                    <th className="align-right" colSpan="2">Totalsumma:</th>
+                                    <th className="text-success font-weight-bold-mine">
+                                      <span className=" float-right">{this.state.totallier} Kr</span></th>
+                                  </tbody>
+                                </table>
+
+                                <button className="btn btn-success confirm px-5" data-toggle="collapse" data-target="#collapseTwo" onClick={this.scrollTop}>Nästa</button>
+
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div>
+                      <div className="p-0 bg-mine-blue d-flex justify-content-between align-items-center" data-toggle="collapse" data-target="#collapseTwo" id="headingTwo" onClick={this.scrollTop}>
+                        <h2 className="mb-0">
+                          <a href="!#" className="nav-link my-a- mr-auto" data-toggle="collapse" data-target="#collapseTwo"><span className="accordion_num">2</span> Leveransadress</a>
+                        </h2>
+                        <span className="title-right mr-5"><img width="24px" src={edit} onClick={this.scrollTop}></img></span>
+                      </div>
+                      <div className="row">
+                        <div className="col-md-2"></div>
+                        <div id="collapseTwo" className="collapse col-md-8" aria-labelledby="headingTwo" data-parent="#printAccordion">
+                          <div className="card-body">
+                            <form onSubmit={this.handleFormSubmit}>
+                              <div className="row mt-4">
+
+                                <div className="form-group col-md-6">
+                                  <label>Förnamn</label>
+                                  <input type="text" name={FIRSTNAME.field} value={this.state.firstName} className="form-control no-border" placeholder="" required onChange={this.onInputChange} />
+                                </div>
+                                <div className="form-group col-md-6">
+
+                                  <label>Efternamn</label>
+                                  <input type="text" name={LASTNAME.field} value={this.state.lastName} className="form-control no-border" placeholder="" required onChange={this.onInputChange} />
+                                </div>
+                                <div className="form-group col-md-6">
+
+                                  <label>Adressrad 1</label>
+                                  <input type="text" name={ADDRESS1.field} value={this.state.address1} className="form-control no-border" placeholder="" required onChange={this.onInputChange} />
+                                </div>
+                                <div className="form-group col-md-6">
+
+                                  <label>Adressrad 2</label>
+                                  <input type="text" name={ADDRESS2.field} value={this.state.address2} className="form-control no-border" placeholder="" onChange={this.onInputChange} />
+                                </div>
+                                <div className="form-group col-md-6">
+
+                                  <label>Postnummer</label>
+                                  <input type="text" name={POSTNUMBER.field} value={this.state.postNumber} className="form-control no-border" placeholder="" required onChange={this.onInputChange} />
+                                </div>
+                                <div className="form-group col-md-6">
+
+                                  <label>Stad</label>
+                                  <input type="text" name={STAD.field} value={this.state.stad} className="form-control no-border" placeholder="" required onChange={this.onInputChange} />
+                                </div>
+                                <div className="form-group col-md-6">
+
+                                  <label>Telefonummer</label>
+                                  <input type="text" name={TELEFONUMER.field} value={this.state.telefonummer} className="form-control no-border" placeholder="" required onChange={this.onInputChange} />
+                                </div>
+                                <div className="form-group col-md-6">
+
+                                  <label>E-post</label>
+                                  <input type="email" name={EPOST.field} value={this.state.epost} className="form-control no-border" placeholder="" required onChange={this.onInputChange} />
+                                </div>
+                                <div className="form-group col-md-12">
+
+                                  <label>Notera</label>
+                                  <textarea name={NOTERA.field} value={this.state.notera} className="form-control no-border" placeholder="" onChange={this.onInputChange} />
+                                </div>
+                              </div>
+
+
+                              <div className="row mt-4 d-flex justify-content-center">
+                                <button type="submit" className="btn btn-success confirm px-5" data-toggle="collapse" data-target={this.state.isFormFilled ? "#collapseThree" : ""}>Nästa</button>
+                              </div>
+
+                            </form>
+                          </div>
+                        </div>
+                        <div className="col-md-2"></div>
+                      </div>
+                    </div>
+                    <div>
+                      <div className="p-0 bg-mine-blue d-flex justify-content-between align-items-center" data-toggle="collapse" data-target={this.state.isFormFilled ? "#collapseThree" : ""} id="headingThree">
+                        <h2 className="mb-0">
+                          <a href="!#" className="nav-link my-a-" data-toggle="collapse" data-target="#collapseThree"><span className="accordion_num">3</span> Betalning</a>
+                        </h2>
+                        <span className="title-right mr-5"><img width="24px" src={edit}></img></span>
+                      </div>
+                      <div id="collapseThree" className="collapse border-left border-bottom border-right" aria-labelledby="headingThree" data-parent="#printAccordion">
+                        <div className="card-body">
+                          <div className="row">
+                            <div className="col-md-2"></div>
+                            <div className="card col-md-8 p-0 mt-3">
+                              <div className="card-header bg-mine-blue">
+                                <strong>Betala med</strong>
+                              </div>
+                              <div className="card-body">
+                                <table className="table">
+                                  <tr>
+                                    <th className="py-0" style={{ verticalAlign: "middle" }}>
+                                      <label className="radio radio-before">
+                                        <span className="radio__input">
+                                          <input type="radio" name="payment" value="4" required checked></input>
+                                          <span className="radio__control"></span>
+                                        </span>
+                                        <span className="radio__label">Swish</span>
+                                      </label>
+                                      {/* <div className="custom-control custom-radio custom-control-inline">
+                                      <input type="radio" className="custom-control-input" name="customRadio" id="customRadio1"></input>
+                                      <label className="custom-control-label" htmlFor="customRadio1">Swish</label>
+                                    </div> */}
+
+                                    </th>
+                                    <td className="p-0">
+                                      <img src={swish} style={{ width: "132px" }} alt="invoice"></img>
+                                    </td>
+
+                                  </tr>
+
+                                  <tr>
+                                    <th>
+                                      <label className="radio radio-before">
+                                        <span className="radio__input">
+                                          <input type="radio" name="payment" value="4"></input>
+                                          <span className="radio__control"></span>
+                                        </span>
+                                        <span className="radio__label">Invoice(+19:-)</span>
+                                      </label>
+                                      {/* <div className="custom-control custom-radio custom-control-inline">
+                                      <input type="radio" className="custom-control-input" name="customRadio" id="customRadio2" checked></input>
+                                      <label className="custom-control-label" htmlFor="customRadio2">Invoice(+19:-)</label>
+                                    </div> */}
+                                    </th>
+                                    <td>
+                                      <img src={email} style={{ width: "30px" }} alt="invoice"></img>
+                                    </td>
+                                  </tr>
+
+                                  <tr>
+                                    <th>
+                                      <label className="radio radio-before">
+                                        <span className="radio__input">
+                                          <input type="radio" name="payment" value="4"></input>
+                                          <span className="radio__control"></span>
+                                        </span>
+                                        <span className="radio__label">Payment Card</span>
+                                      </label>
+                                      {/* <div className="custom-control custom-radio custom-control-inline">
+                                      <input type="radio" className="custom-control-input" name="customRadio" id="customRadio3" ></input>
+                                      <label className="custom-control-label" htmlFor="customRadio3">Payment Card</label>
+                                    </div> */}
+                                    </th>
+                                    <td>
+                                      <img src={card} style={{ width: "30px" }} alt="invoice"></img>
+                                    </td>
+                                  </tr>
+                                </table>
+                              </div>
+                              <div className="card-footer">
+                                <div className="d-flex align-items-center">
+                                  <input type="checkbox" name="customCheck" id="customC2" checked required></input>
+                                  <label className="ml-2 p-0 mb-0 small-text-on-mobile" htmlFor="customC2">Jag godkanner diggiart.com's <a href="/cookie-consent">Integritespolicy </a>(hantering av persondata) samt <a href="!#">Villkor</a>.</label>
+                                </div>
+
+                                <div className="row mt-3 text-center">
+                                  <div className="col-md-12">
+                                    <button className="btn btn-success" onClick={this.handleOrderSubmit}>Slutfor order pa <strong>{this.state.totallier} kr</strong></button>
+                                    <p className="mt-2 text-success">Leverans 3-5 arbetsdagar</p>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+
+                            <div className="col-md-2"></div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="modal fade" id="signatureModal" tabIndex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div className="modal-dialog" role="document">
+            <div className="modal-content">
+              <div className="modal-header">
+                <h5 className="modal-title" id="exampleModalLabel">Signature</h5>
+                <button type="button" className="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div className="modal-body">
+                <div className="canvas-container2 text-center">
+                  <div id="canvas">
+                    <canvas
+                      ref={this.editorRef}
+                      id="signature-canvas"
+                      data-paper-resize
+                      style={{ width: "100%", height: "100%" }}
+                      width={400}
+                      height={200}
+                    />
+                  </div>
+                </div>
+              </div>
+              <div className="modal-footer">
+                <button type="button" className="btn btn-warning" onClick={this.clearSignature}>Gör om</button>
+                <button type="button" className="btn btn-secondary" data-dismiss="modal">Stäng</button>
+                <button type="button" className="btn btn-primary" data-dismiss="modal" onClick={this.saveSignature}>Godkänn signatur</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </React.Fragment >
+    );
+  }
+}
+
+export default PrintOrder;

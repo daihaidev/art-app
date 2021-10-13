@@ -1,0 +1,52 @@
+.swish_pay_check {
+
+    .center-text {
+        text-align: center;
+    }
+
+    .home_link {
+        margin: 0 10px;
+    }
+
+    .error, .success {
+        display: flex;
+        align-items: center;
+        max-width: 600px;
+        margin: auto;
+        margin-bottom: 20px;
+        background-color: #e0caca;
+        padding: 10px 10px;
+    }
+
+    .success {
+        background-color: #c4e0b3;
+        color: #367311;
+    }
+
+    .order_details {
+
+        .img_block {
+            max-width: 400px;
+            margin: auto;
+            margin-bottom: 25px;
+            border: 2px solid #ccc;
+
+            img {
+                height: 100%;
+                width: 100%;
+            }
+        }
+    }
+
+    ul {
+        text-align: left;
+        max-width: 600px;
+        margin: auto;
+        margin-bottom: 25px;
+        list-style-type: none;
+
+        li {
+            border-bottom: 1px solid #ccc;
+        }
+    }
+}

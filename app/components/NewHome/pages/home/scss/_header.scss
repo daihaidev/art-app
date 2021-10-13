@@ -1,0 +1,292 @@
+$primary: #28a74f;
+$primary_tint: #1f8a3f;
+
+@mixin btn {
+  margin: 0;
+  border-radius: 80px;
+  border: none;
+  color: white !important;
+}
+
+.btn--green {
+  @include btn;
+
+  color: white !important;
+  background-color: #86b236;
+  transition: 0.7s;
+
+  &:hover {
+    background-color: #319c27;
+  }
+}
+
+.dropdown-mint {
+  width: fit-content;
+  a {
+    padding: 12px 56px;
+  }
+}
+
+.header {
+  height: 180px;
+}
+
+.header-wrapper {
+  position: fixed;
+  z-index: 10;
+  width: 100vw;
+  padding: 30px 10px;
+  background-color: #f4f4f4;
+  font-size: 1.2rem;
+  transition: 0.7s;
+}
+
+
+
+.scrolled {
+  padding-top: 10px;
+
+  span.logo {
+    & img {
+      width: 80px;
+      margin-top: -30px;
+    }
+  }
+}
+.logoMBrand {
+  width: 120px;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.mNavItem{
+  padding: 0;
+  margin: 0;
+}
+
+span.logo {
+  display: inline-block;
+  width: 250px;
+  position: absolute;
+  & img {
+    transition: 0.5s;
+    width: 140px;
+    margin-top: -60px;
+  }
+}
+
+
+.navbar-collapse {
+  padding: 0 0px;
+}
+
+.header-nav {
+  font-weight: bold;
+  width: 100%;
+  white-space: nowrap;
+
+  & .nav-item a {
+    display: block;
+    padding: 0.5rem 0;
+    color: #333;
+    transition: 0.5s;
+
+    &:hover,
+    &.active {
+      border: none !important;
+      color: $primary;
+    }
+  }
+}
+
+.navbar-toggle {
+  border: 0;
+  position: relative;
+  width: 60px;
+  padding: 0;
+  margin: 0;
+  cursor: pointer;
+
+  .lines {
+    width: 25px;
+    display: block;
+    position: relative;
+    float: right;
+    right: 0;
+    margin: 28px 20px;
+    height: 18px;
+  }
+
+  span {
+    height: 2px;
+    width: 100%;
+    background-color: #333;
+    display: block;
+    margin-bottom: 5px;
+    transition: transform 0.5s ease;
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+
+  &.open {
+    span {
+      position: absolute;
+      &:first-child {
+        top: 6px;
+        transform: rotate(45deg);
+      }
+      &:nth-child(2) {
+        visibility: hidden;
+      }
+      &:last-child {
+        width: 100%;
+        top: 6px;
+        transform: rotate(-45deg);
+      }
+      &:hover {
+        background-color: $primary;
+      }
+    }
+  }
+
+  &:hover,
+  &:focus,
+  .navigation-menu > li > a:hover {
+    background-color: transparent;
+  }
+}
+
+@media (max-width: 1280px) {
+  .navbar-collapse {
+    padding: 0;
+  }
+  span.logo {
+    display: inline-block;
+    width: 250px;
+    position: absolute;
+    & img {
+      transition: 0.5s;
+      width: 120px;
+      margin-top: -60px;
+    }
+  }
+}
+@media (max-width: 1199px) {
+  .logoMBrand {
+    width: 120px;
+    margin: 0 !important;
+    padding: 0 !important;
+    margin-top: 60px;
+    position: relative;
+  }
+
+  .dropdown-mint {
+    display: block;
+    position: relative;
+    align-self: center;
+  }
+}
+
+@media (max-width: 375px) {
+  .navbar-toggle {
+    .lines {
+      margin-right: 0 !important;
+    }
+  }
+
+  .dropdown-mint a {
+    width: 120px;
+    padding-left: 14px !important;
+    padding-right: 14px !important;
+    left: 6%;
+  }.dropdown-mint {
+    display: block;
+    position: relative;
+    align-self: center;
+  }
+
+  span.logo {
+    position: relative;
+    width: 70px;
+    padding-left: 5px;
+
+    & img {
+      width: 40px;
+      margin-top: 48px;
+    }
+  }
+}
+
+@media (max-width: 321px) {
+  .navbar-toggle {
+    .lines {
+      margin-right: 0 !important;
+    }
+  }
+
+  .dropdown-mint a {
+    width: 80px;
+    padding-left: 14px !important;
+    padding-right: 14px !important;
+    left: 6%;
+  }.dropdown-mint {
+    display: block;
+    position: relative;
+    align-self: center;
+  }
+
+  span.logo {
+    position: relative;
+    width: 40px;
+    padding-left: 5px;
+
+    & img {
+      width: 30px;
+      margin-top: 48px;
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .header-wrapper {
+    padding-top: 10px;
+  }
+
+  span.logo {
+    position: relative;
+    width: 100px;
+    padding-left: 5px;
+
+    & img {
+      width: 80px;
+      margin-top: 0px;
+    }
+  }
+  .dropdown-mint {
+    display: block;
+    position: relative;
+    align-self: center;
+  }.dropdown-mint a {
+    width: 120px;
+    padding-left: 14px !important;
+    padding-right: 14px !important;
+    left: 6%;
+  }.dropdown-mint {
+    display: block;
+    position: relative;
+    align-self: center;
+  }
+
+
+  .scrolled {
+    padding-top: 0px;
+
+    span.logo {
+      & img {
+        width: 80px;
+        margin-top: 0px;
+      }
+    }
+  }
+}
